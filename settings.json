@@ -1,0 +1,23 @@
+{
+  "env": {
+    "ANTHROPIC_BASE_URL": "http://192.168.31.51:8000",
+    "ANTHROPIC_API_KEY": "sk-local-no-key-needed",
+    "ANTHROPIC_DEFAULT_SONNET_MODEL": "qwen3.8-27b",
+    "ANTHROPIC_DEFAULT_OPUS_MODEL": "qwen3.8-27b",
+    "ANTHROPIC_DEFAULT_HAIKU_MODEL": "qwen3.8-27b",
+    "CLAUDE_CODE_SUBAGENT_MODEL": "qwen3.8-27b"
+  },
+  "permissions": {
+    "defaultMode": "bypassPermissions",
+    "allow": [
+      "Bash",
+      "Agent",
+      "Edit",
+      "Write"
+    ]
+  },
+  "model": "qwen3.8-27b",
+  "effortLevel": "medium",
+  "skipDangerousModePermissionPrompt": true,
+  "autoCompactEnabled": false
+}
