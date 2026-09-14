@@ -1,6 +1,17 @@
 #!/bin/bash
 
-export MODEL_ROOT="$HOME/pretrained"
+MODEL_ROOT="$HOME/pretrained"
+CACHE_DIR="$HOME/.cache/qwen38/sglang"
+
+# Patch chat template to accept 'high' and 'max' effort from Claude Code
+PATCHED_TEMPLATE="$CACHE_DIR/chat_template_patched.jinja"
+if [ ! -f "$PATCHED_TEMPLATE" ]; then
+  echo "Patching chat template..."
+  mkdir -p "$CACHE_DIR"
+  cp "$MODEL_ROOT/RadixArk/Qwen3.8-27B-NVFP4/chat_template.jinja" "$PATCHED_TEMPLATE"
+  sed -i "/resolved_reasoning_effort = reasoning_effort|default/a\\    {%- if resolved_reasoning_effort == 'high' %}\\n        {%- set resolved_reasoning_effort = 'medium' %}\\n    {%- elif resolved_reasoning_effort == 'max' %}\\n        {%- set resolved_reasoning_effort = 'xhigh' %}\\n    {%- endif %}" "$PATCHED_TEMPLATE"
+  echo "Patched: high->medium, max->xhigh"
+fi
 
 docker run -d --name qwen38-sglang \
   --gpus all --ipc=host --shm-size=16g \
@@ -14,11 +25,12 @@ docker run -d --name qwen38-sglang \
   -e TORCHINDUCTOR_CACHE_DIR=/cache/inductor \
   -v "$MODEL_ROOT:/models:ro" \
   -v "$HOME/.cache/qwen38/hf:/root/.cache/huggingface" \
-  -v "$HOME/.cache/qwen38/sglang:/cache" \
+  -v "$CACHE_DIR:/cache" \
   lmsysorg/sglang:dev-qwen38-27b-dflash2 \
   python3 -m sglang.launch_server \
     --trust-remote-code \
     --model-path /models/RadixArk/Qwen3.8-27B-NVFP4 \
+    --chat-template /cache/chat_template_patched.jinja \
     --served-model-name qwen3.8-27b \
     --tp-size 1 \
     --host 0.0.0.0 --port 8000 \

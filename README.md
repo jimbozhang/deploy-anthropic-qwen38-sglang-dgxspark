@@ -34,15 +34,9 @@ Wait until the log shows `The server is fired up and ready to roll!`, then verif
 curl http://localhost:8000/v1/models
 ```
 
-## 4. Configure for Claude Code
+## 4. Configure Claude Code
 
 Copy `settings.json` to your Claude Code settings, replacing `192.168.31.51` with your server's LAN IP.
-
-> **Important:** When using Claude Code, set effort to `medium` or `low`. The `high`/`xhigh` levels are not compatible with this model's chat template.
->
-> ```bash
-> claude --effort medium
-> ```
 
 ## 5. Stop the Server
 
